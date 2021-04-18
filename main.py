@@ -1,4 +1,5 @@
-from fastapi import FastAPI, status
+import hashlib
+from fastapi import FastAPI, status, Response
 
 app = FastAPI()
 
@@ -36,3 +37,14 @@ def hellopost():
 @app.delete("/method")
 def hellopost():
     return {"method": "DELETE"}
+
+
+@app.get("/auth")
+def authorize(password: str = None, password_hash: str = None, response: Response = 204):
+    h = hashlib.sha512(password.encode("utf-8"))
+    print(h.hexdigest())
+    if password is None or password_hash is None or h.hexdigest() != password_hash:
+        response.status_code = 401
+        return
+    response.status_code = 204
+    return
