@@ -57,6 +57,6 @@ def authorize(password: str = None, password_hash: str = None, response: Respons
     return
 
 
-@app.post("/register")
+@app.post("/register", status_code=status.HTTP_201_CREATED)
 def register(pacjent: SimplePacjent):
     return Pacjent(pacjent)
