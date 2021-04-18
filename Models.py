@@ -15,7 +15,7 @@ class SimplePacjent(BaseModel):
 class Pacjent:
     def __init__(self, podstawa: SimplePacjent):
         global counter
-        regex = re.compile('[^a-zA-Z]')
+        regex = re.compile('[\W\d]')
         self.id = counter
         counter += 1
         self.name = podstawa.name
@@ -25,5 +25,4 @@ class Pacjent:
         literynazwisko = len(regex.sub('', podstawa.surname))
         # self.register_date = datetime.date(2021, 4, 1)
         self.register_date = datetime.date.today()
-        # self.vaccination_date = self.register_date + timedelta(days=(literyimie+literynazwisko))
-        self.vaccination_date = podstawa.name + "nazwisko:" + podstawa.surname
+        self.vaccination_date = self.register_date + timedelta(days=(literyimie+literynazwisko))
