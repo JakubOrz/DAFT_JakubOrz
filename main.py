@@ -15,26 +15,24 @@ def hello_name(name: str):
 
 @app.post("/method", status_code=status.HTTP_201_CREATED)
 def hellopost():
-    return ["mehod: POST"]
+    return {"method": "POST"}
 
 
 @app.get("/method")
 def hellopost():
-    return ["method: GET"]
+    return {"method": "GET"}
 
 
 @app.put("/method")
 def hellopost():
-    return ["method: PUT"]
+    return {"method": "PUT"}
 
 
 @app.options("/method")
 def hellopost():
-    return ["method: OPTIONS"]
+    return {"method": "OPTIONS"}
 
 
 @app.delete("/method")
 def hellopost():
-    return ["method: DELETE"]
-
-
+    return {"method": "DELETE"}
