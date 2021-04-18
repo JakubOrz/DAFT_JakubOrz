@@ -4,6 +4,7 @@ from Models import SimplePacjent, Pacjent
 
 app = FastAPI()
 counter: int = 1
+lista = dict()
 
 
 @app.get("/")
@@ -59,4 +60,21 @@ def authorize(password: str = None, password_hash: str = None, response: Respons
 
 @app.post("/register", status_code=status.HTTP_201_CREATED)
 def register(pacjent: SimplePacjent):
-    return Pacjent(pacjent)
+    global lista, counter
+    pacjent = Pacjent(pacjent, numer=counter)
+    lista[counter] = pacjent
+    counter += 1
+    return pacjent
+
+
+@app.get("/patient/{numer}", status_code=200)
+def getpatient(numer: int, response: Response = 200):
+    if numer < 1:
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return
+    global lista
+    pacjent: Pacjent = lista.get(numer)
+    if pacjent is None:
+        response.status_code = status.HTTP_404_NOT_FOUND
+    return pacjent
+

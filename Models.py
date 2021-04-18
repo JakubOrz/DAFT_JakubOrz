@@ -4,8 +4,6 @@ import re
 import datetime
 from datetime import timedelta
 
-counter = 1
-
 
 class SimplePacjent(BaseModel):
     name: str
@@ -13,11 +11,9 @@ class SimplePacjent(BaseModel):
 
 
 class Pacjent:
-    def __init__(self, podstawa: SimplePacjent):
-        global counter
+    def __init__(self, podstawa: SimplePacjent, numer=None):
         regex = re.compile('[\W\d]')
-        self.id = counter
-        counter += 1
+        self.id = numer
         self.name = podstawa.name
         self.surname = podstawa.surname
 
