@@ -3,7 +3,6 @@ from typing import Optional
 
 import datetime
 from datetime import timedelta
-
 counter=1
 
 
@@ -17,7 +16,8 @@ class Pacjent:
         global counter
         self.id = counter
         counter += 1
-        self.name = podstawa.name
-        self.surname = podstawa.surname
+        self.name = podstawa.name.strip()
+        self.surname = podstawa.surname.strip()
+        # self.register_date = datetime.date(2021, 4, 1)
         self.register_date = datetime.date.today()
         self.vaccination_date = self.register_date + timedelta(days=(len(self.name)+len(self.surname)))
