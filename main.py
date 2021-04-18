@@ -1,7 +1,9 @@
 import hashlib
 from fastapi import FastAPI, status, Response
+from Models import SimplePacjent, Pacjent
 
 app = FastAPI()
+counter: int = 1
 
 
 @app.get("/")
@@ -53,3 +55,8 @@ def authorize(password: str = None, password_hash: str = None, response: Respons
         return
     response.status_code = 204
     return
+
+
+@app.post("/register")
+def register(pacjent: SimplePacjent):
+    return Pacjent(pacjent)
