@@ -40,9 +40,15 @@ def hellopost():
 
 
 @app.get("/auth")
-def authorize(password: str = None, password_hash: str = None, response: Response = 204):
+def authorize(password: str = None, password_hash: str = None, response: Response = 200):
+    if password is None or password_hash is None or password == "" or password_hash == "":
+        response.status_code = 401
+        return
     h = hashlib.sha512(password.encode())
-    if password is None or password_hash is None or h.hexdigest() != password_hash:
+    # print(f"pass>:{password}")
+    # print(f"passhash:>{password_hash}")
+    # print(h.hexdigest())
+    if h.hexdigest() != password_hash:
         response.status_code = 401
         return
     response.status_code = 204
