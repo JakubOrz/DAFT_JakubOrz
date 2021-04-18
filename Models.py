@@ -18,8 +18,11 @@ class Pacjent:
         regex = re.compile('[^a-zA-Z]')
         self.id = counter
         counter += 1
-        self.name = regex.sub('', podstawa.name)
-        self.surname = regex.sub('', podstawa.surname)
+        self.name = podstawa.name
+        self.surname = podstawa.surname
+
+        literyimie = len(regex.sub('', podstawa.name))
+        literynazwisko = len(regex.sub('', podstawa.surname))
         # self.register_date = datetime.date(2021, 4, 1)
         self.register_date = datetime.date.today()
-        self.vaccination_date = self.register_date + timedelta(days=(len(self.name) + len(self.surname)))
+        self.vaccination_date = self.register_date + timedelta(days=(literyimie+literynazwisko))
