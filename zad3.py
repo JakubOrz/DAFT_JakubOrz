@@ -38,15 +38,15 @@ def loginSession(response: Response, logintoken: HTTPBasicCredentials = Depends(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     session_token = sha256(f"{secretKey}{date.today()}".encode()).hexdigest()
     kluczeSesji.add(session_token)
-    response.set_cookie(key="token", value=session_token)
+    response.set_cookie(key="session_token", value=session_token)
     response.status_code = status.HTTP_201_CREATED
     return response
 
 
 @zadanie3ruter.post("/login_token")
-def loginToken(*, logintoken: HTTPBasicCredentials = Depends(security), token=Cookie(None)):
-    if str(logintoken.username) != realusername or str(logintoken.password) != realpassword:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    if token in kluczeSesji:
-        return {"token": str(token)}
+def loginToken(session_token=Cookie(None)):
+    # if str(logintoken.username) != realusername or str(logintoken.password) != realpassword:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    if session_token in kluczeSesji:
+        return {"token": session_token}
     raise HTTPException(status_code=401)
