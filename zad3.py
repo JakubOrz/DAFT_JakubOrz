@@ -43,7 +43,7 @@ def loginSession(response: Response, logintoken: HTTPBasicCredentials = Depends(
     return response
 
 
-@zadanie3ruter.post("/login_token")
+@zadanie3ruter.post("/login_token", status_code=201)
 def loginToken(response: Response, logintoken: HTTPBasicCredentials = Depends(security),
                session_token=Cookie(None)):
     if str(logintoken.username) != realusername or str(logintoken.password) != realpassword:
