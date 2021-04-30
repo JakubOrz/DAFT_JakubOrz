@@ -2,7 +2,7 @@ import base64
 from hashlib import sha256
 from fastapi import APIRouter, Cookie, HTTPException, status, Depends
 from datetime import date
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi import Response
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
@@ -44,9 +44,9 @@ def loginSession(response: Response, logintoken: HTTPBasicCredentials = Depends(
 
 
 @zadanie3ruter.post("/login_token", status_code=201)
-def loginToken(response: Response, logintoken: HTTPBasicCredentials = Depends(security),
+def loginToken(logintoken: HTTPBasicCredentials = Depends(security),
                session_token=Cookie(None)):
     if str(logintoken.username) != realusername or str(logintoken.password) != realpassword:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    return {"token": session_token}
-
+    session_token2 = sha256(f"{secretKey}placki".encode()).hexdigest()
+    return JSONResponse(status_code=201, content={"token": session_token2})
