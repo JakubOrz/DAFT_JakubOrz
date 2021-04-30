@@ -15,8 +15,8 @@ security = HTTPBasic()
 realusername = "4dm1n"
 realpassword = "NotSoSecurePa$$"
 
-session_cookie_value = "None"
-session_token_value = "None"
+session_cookie_value = None
+session_token_value = None
 devlogoutredirection = "localhost:8000/logged_out"
 
 @zadanie3ruter.get("/test")
@@ -67,7 +67,7 @@ def welcome_session(format: str = None, session_token: str = Cookie(None)):
 
 @zadanie3ruter.get("/welcome_token", status_code=200)
 def welcome_token(token: str = None, format: str = None):
-    if token != session_token_value or session_token_value == "None":
+    if token != session_token_value or session_token_value is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     return welcomemessage(format)
 
@@ -75,10 +75,10 @@ def welcome_token(token: str = None, format: str = None):
 def handlelogout(format: str, cookies, token, devmode=False):
     if cookies:
         global session_cookie_value
-        session_cookie_value = "None"
+        session_cookie_value = None
     if token:
         global session_token_value
-        session_cookie_value = "None"
+        session_token_value = None
 
     if devmode:
         return RedirectResponse(status_code=status.HTTP_303_SEE_OTHER,
@@ -90,7 +90,7 @@ def handlelogout(format: str, cookies, token, devmode=False):
 @zadanie3ruter.delete("/logout_session", status_code=status.HTTP_303_SEE_OTHER)
 def logout_session(format: str = None, session_token: str = Cookie(None)):
     global session_cookie_value
-    if session_cookie_value == "None" or session_token != session_cookie_value:
+    if session_cookie_value is None or session_token != session_cookie_value:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     return handlelogout(format=format, cookies=True, token=False)
 
@@ -98,7 +98,7 @@ def logout_session(format: str = None, session_token: str = Cookie(None)):
 @zadanie3ruter.delete("/logout_token", status_code=status.HTTP_303_SEE_OTHER)
 def logout_token(token: str = None, format: str = None):
     global session_token_value
-    if token != session_token_value or session_token_value == "None":
+    if token != session_token_value or session_token_value is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     return handlelogout(format=format, cookies=False, token=True)
 
