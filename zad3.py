@@ -89,6 +89,7 @@ def handlelogout(format: str, cookies, token, devmode=False):
 
 @zadanie3ruter.delete("/logout_session", status_code=status.HTTP_303_SEE_OTHER)
 def logout_session(format: str = None, session_token: str = Cookie(None)):
+    global session_cookie_value
     if session_cookie_value == "None" or session_token != session_cookie_value:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     return handlelogout(format=format, cookies=True, token=False)
@@ -96,6 +97,7 @@ def logout_session(format: str = None, session_token: str = Cookie(None)):
 
 @zadanie3ruter.delete("/logout_token", status_code=status.HTTP_303_SEE_OTHER)
 def logout_token(token: str = None, format: str = None):
+    global session_token_value
     if token != session_token_value or session_token_value == "None":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     return handlelogout(format=format, cookies=False, token=True)
