@@ -69,8 +69,8 @@ def welcome_token(token: str = None, format: str = None):
     return welcomemessage(format)
 
 
-@zadanie3ruter.delete("/logout_session", status_code=status.HTTP_303_SEE_OTHER)
-def logout_session(format: str = None, session_token: str = Cookie(None)):
+@zadanie3ruter.delete("/logout_session2", status_code=status.HTTP_303_SEE_OTHER)
+def logout_session_withRedirect(format: str = None, session_token: str = Cookie(None)):
     global sessionHandler
     if not sessionHandler.authorizeCookie(session_token):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
@@ -79,14 +79,32 @@ def logout_session(format: str = None, session_token: str = Cookie(None)):
                             url=f"https://daft-apka-jakubo.herokuapp.com/logged_out?format={format}")
 
 
-@zadanie3ruter.delete("/logout_token", status_code=status.HTTP_303_SEE_OTHER)
-def logout_token(token: str = None, format: str = None):
+@zadanie3ruter.delete("/logout_token2", status_code=status.HTTP_303_SEE_OTHER)
+def logout_token_withRedirect(token: str = None, format: str = None):
     global sessionHandler
     if not sessionHandler.authorizeToken(token):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     sessionHandler.logoutToken(token)
     return RedirectResponse(status_code=403,
                             url=f"https://daft-apka-jakubo.herokuapp.com/logged_out?format={format}")
+
+
+@zadanie3ruter.delete("/logout_session", status_code=200)
+def logout_session(session_token: str = Cookie(None)):
+    global sessionHandler
+    if not sessionHandler.authorizeCookie(session_token):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    sessionHandler.logoutCookie(session_token)
+    return
+
+
+@zadanie3ruter.delete("/logout_token", status_code=200)
+def logout_tokent(token: str = None):
+    global sessionHandler
+    if not sessionHandler.authorizeToken(token):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    sessionHandler.logoutToken(token)
+    return
 
 
 @zadanie3ruter.get("/logged_out", status_code=200)
