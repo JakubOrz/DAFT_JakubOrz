@@ -46,11 +46,11 @@ async def get_customers():
     }
 
 
-@zad4ruter.get("/customers/{id}")
+@zad4ruter.get("/products/{id}")
 async def get_single_customer(id: int):
-    cursor = await zad4ruter.connection.execute(
-        "SELECT ProductID, ProductName FROM Products WHERE ProductID = :custid", {'custid': id}
-    )
+    command = "SELECT ProductID, ProductName FROM Products WHERE ProductID = :prodid"
+    params = {'prodid': id}
+    cursor = await zad4ruter.connection.execute(command, params)
     data = await cursor.fetchone()
     if data is None:
         raise HTTPException(status_code=404, detail="Nie ma takiego produktu")
