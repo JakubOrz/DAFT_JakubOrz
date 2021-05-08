@@ -1,7 +1,6 @@
 import sqlite3
 import aiosqlite
-from fastapi import APIRouter
-
+from fastapi import APIRouter, HTTPException
 
 zad4ruter = APIRouter()
 
@@ -45,3 +44,14 @@ async def get_customers():
     return {
         "customers": categories,
     }
+
+
+@zad4ruter.get("/customers/{id}")
+async def get_single_customer(id: int):
+    cursor = await zad4ruter.connection.execute(
+        "SELECT ProductID, ProductName FROM Products WHERE ProductID = :custid", {'custid': id}
+    )
+    data = await cursor.fetchone()
+    if data is None:
+        raise HTTPException(status_code=404, detail="Nie ma takiego produktu")
+    return {"id": data['ProductID'], "name": data['ProductName']}
