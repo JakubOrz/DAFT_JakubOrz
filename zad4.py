@@ -59,9 +59,9 @@ async def get_single_customer(id: int):
 
 @zad4ruter.get("/employees", status_code=200)
 async def get_employees(limit: int, offset: int, order: str = "id"):
-    print(f"Order: {order}")
     if order not in ["id", "last_name", "first_name", "city"]:
         raise HTTPException(status_code=400, detail="Niepoprawny parametr order")
+
     orderowanie = {
         'id': 'EmployeeID',
         'first_name': 'FirstName',
