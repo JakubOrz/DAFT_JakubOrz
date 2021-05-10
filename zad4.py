@@ -3,6 +3,7 @@ import aiosqlite
 from fastapi import APIRouter, HTTPException
 
 zad4ruter = APIRouter()
+logger = list()
 
 
 @zad4ruter.on_event("startup")
@@ -59,6 +60,7 @@ async def get_single_customer(id: int):
 
 @zad4ruter.get("/employees", status_code=200)
 async def get_employees(limit: int, offset: int, order: str = "id"):
+    logger.append(f"get employees {limit=} {offset=} {order=}")
     if order not in ["id", "last_name", "first_name", "city"]:
         raise HTTPException(status_code=400, detail="Niepoprawny parametr order")
 
@@ -82,3 +84,8 @@ async def get_employees(limit: int, offset: int, order: str = "id"):
     result = [{"id": x['EmployeeID'], "last_name": x['LastName'],
                "first_name": x['FirstName'], "city": x['City']} for x in data]
     return {"employees": result}
+
+
+@zad4ruter.get("/getlogs")
+def getlogs():
+    return logger
