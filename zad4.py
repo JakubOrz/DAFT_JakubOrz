@@ -1,4 +1,4 @@
-import sqlite3
+# import sqlite3
 import aiosqlite
 from fastapi import APIRouter, HTTPException
 
@@ -9,7 +9,7 @@ zad4ruter = APIRouter()
 async def startup():
     zad4ruter.connection = await aiosqlite.connect("northwind.db")
     zad4ruter.connection.text_factory = lambda b: b.decode(errors="ignore")
-    zad4ruter.connection.row_factory = sqlite3.Row
+    zad4ruter.connection.row_factory = aiosqlite.Row
 
 
 @zad4ruter.on_event("shutdown")
@@ -55,3 +55,30 @@ async def get_single_customer(id: int):
     if data is None:
         raise HTTPException(status_code=404, detail="Nie ma takiego produktu")
     return {"id": data['ProductID'], "name": data['ProductName']}
+
+
+@zad4ruter.get("/employees", status_code=200)
+async def get_employees(limit: int, offset: int, order: str = "id"):
+    print(f"Order: {order}")
+    if order not in ["id", "last_name", "first_name", "city"]:
+        raise HTTPException(status_code=400, detail="Niepoprawny parametr order")
+    orderowanie = {
+        'id': 'EmployeeID',
+        'first_name': 'FirstName',
+        'last_name': 'LastName',
+        'city': 'City'
+    }
+    command = f"SELECT EmployeeID, LastName, FirstName, City " \
+              "FROM employees" \
+              " ORDER BY " + str(orderowanie.get(order)) + "" \
+                                                           " LIMIT :limit" \
+                                                           " OFFSET :offsetting"
+    params = {'orderowanie': order, 'limit': limit, 'offsetting': offset}
+
+    cursor = await zad4ruter.connection.execute(command, params)
+    data = await cursor.fetchall()
+    if data is None:
+        raise HTTPException(status_code=404, detail="Nie ma takiego pracownika")
+    result = [{"id": x['EmployeeID'], "last_name": x['LastName'],
+               "first_name": x['FirstName'], "city": x['City']} for x in data]
+    return {"employees": result}
