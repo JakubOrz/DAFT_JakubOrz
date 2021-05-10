@@ -59,7 +59,7 @@ async def get_single_customer(id: int):
 
 
 @zad4ruter.get("/employees", status_code=200)
-async def get_employees(limit: int, offset: int, order: str = "id"):
+async def get_employees(limit: int = -1, offset: int = 0, order: str = "id"):
     logger.append(f"get employees {limit=} {offset=} {order=}")
     if order not in ["id", "last_name", "first_name", "city"]:
         raise HTTPException(status_code=400, detail="Niepoprawny parametr order")
@@ -73,8 +73,7 @@ async def get_employees(limit: int, offset: int, order: str = "id"):
     command = f"SELECT EmployeeID, LastName, FirstName, City " \
               "FROM employees" \
               " ORDER BY " + str(orderowanie.get(order)) + "" \
-                                                           " LIMIT :limit" \
-                                                           " OFFSET :offsetting"
+                                                           " LIMIT :limit OFFSET :offsetting"
     params = {'orderowanie': order, 'limit': limit, 'offsetting': offset}
 
     cursor = await zad4ruter.connection.execute(command, params)
