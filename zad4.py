@@ -61,8 +61,6 @@ async def get_single_customer(id: int):
 @zad4ruter.get("/employees", status_code=200)
 async def get_employees(limit: int = -1, offset: int = 0, order: str = "id"):
     logger.append(f"get employees {limit=} {offset=} {order=}")
-    if order not in ["id", "last_name", "first_name", "city"]:
-        raise HTTPException(status_code=400, detail="Niepoprawny parametr order")
 
     orderowanie = {
         'id': 'EmployeeID',
@@ -70,6 +68,10 @@ async def get_employees(limit: int = -1, offset: int = 0, order: str = "id"):
         'last_name': 'LastName',
         'city': 'City'
     }
+
+    if order not in orderowanie.keys():
+        raise HTTPException(status_code=400, detail="Niepoprawny parametr order")
+
     command = f"SELECT EmployeeID, LastName, FirstName, City " \
               "FROM employees" \
               " ORDER BY " + str(orderowanie.get(order)) + "" \
@@ -83,6 +85,22 @@ async def get_employees(limit: int = -1, offset: int = 0, order: str = "id"):
     result = [{"id": x['EmployeeID'], "last_name": x['LastName'],
                "first_name": x['FirstName'], "city": x['City']} for x in data]
     return {"employees": result}
+
+
+@zad4ruter.get("/products_extended", status_code=200)
+async def get_products_extended():
+
+    command = f"SELECT ProductID, ProductName, CategoryName, CompanyName" \
+              f" FROM Products" \
+              f" INNER JOIN Categories ON Categories.CategoryID = Products.CategoryID" \
+              f" INNER JOIN Suppliers ON Products.SupplierID = Suppliers.SupplierID"
+
+    cursor = await zad4ruter.connection.execute(command)
+    data = await cursor.fetchall()
+    result = [{"id": x['ProductID'], "name":x['ProductName'],
+               "category":x['CategoryName'], "supplier":x['CompanyName']} for x in data]
+
+    return {"products_extended": result}
 
 
 @zad4ruter.get("/getlogs")
