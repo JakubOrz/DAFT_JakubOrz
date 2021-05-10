@@ -103,6 +103,26 @@ async def get_products_extended():
     return {"products_extended": result}
 
 
+@zad4ruter.get("/products/{id}/orders", status_code=200)
+async def get_all_product_orders(id: int):
+    command = f"SELECT c.CompanyName, od.UnitPrice, od.Quantity, od.Discount, o.OrderID " \
+              f"FROM Products p" \
+              f" INNER JOIN 'Order Details' od ON od.ProductID = p.ProductID" \
+              f" INNER JOIN Orders o ON o.OrderID = od.OrderID" \
+              f" INNER JOIN Customers c ON c.CustomerID = o.CustomerID" \
+              f" WHERE p.ProductID = :productID"
+    params = {"productID": id}
+
+    cursor = await zad4ruter.connection.execute(command, params)
+    data = await cursor.fetchall()
+    if data is None:
+        raise HTTPException(status_code=404, detail="Produktu o podanym id nie ma")
+    orders = [{"id": x['OrderID'], "customer": x['CompanyName'], "quantity":x['Quantity'],
+               "total_price":round((1 - float(x['Discount']))*(float(x['UnitPrice']) * int(x['Quantity'])), 2)}
+              for x in data]
+    return {"orders": orders}
+
+
 @zad4ruter.get("/getlogs")
 def getlogs():
     return logger
