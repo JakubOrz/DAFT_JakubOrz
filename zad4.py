@@ -40,9 +40,14 @@ async def get_categories():
 
 @zad4ruter.get("/customers", status_code=200)
 async def get_customers():
-    cursor = await zad4ruter.connection.execute("SELECT CustomerID, CompanyName FROM Customers ORDER BY CustomerID")
+    command = f"SELECT CustomerID, CompanyName, COALESCE(Address,'')||' '||" \
+              f"COALESCE(PostalCode,'')||' '|| " \
+              f"COALESCE(City,'')||' '||COALESCE(Country,'') 'full_adress' FROM Customers"
+    cursor = await zad4ruter.connection.execute(command)
+
     data = await cursor.fetchall()
-    categories = [{"id": x['CustomerID'], "name": x['CompanyName']} for x in data]
+    categories = [{"id": x['CustomerID'], "name": x['CompanyName'], "full_address": x['full_adress']}
+                  for x in data]
     return {
         "customers": categories,
     }
