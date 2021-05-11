@@ -5,6 +5,10 @@ import datetime
 from datetime import timedelta
 
 
+class CategoriesDto(BaseModel):
+    name: str
+
+
 class SimplePacjent(BaseModel):
     name: str
     surname: str
@@ -21,4 +25,4 @@ class Pacjent:
         literynazwisko = len(regex.sub('', podstawa.surname))
         # self.register_date = datetime.date(2021, 4, 1)
         self.register_date = datetime.date.today()
-        self.vaccination_date = self.register_date + timedelta(days=(literyimie+literynazwisko))
+        self.vaccination_date = self.register_date + timedelta(days=(literyimie + literynazwisko))

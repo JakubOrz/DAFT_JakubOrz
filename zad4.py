@@ -1,6 +1,7 @@
 # import sqlite3
 import aiosqlite
 from fastapi import APIRouter, HTTPException
+from Models import CategoriesDto
 
 zad4ruter = APIRouter()
 logger = list()
@@ -89,7 +90,6 @@ async def get_employees(limit: int = -1, offset: int = 0, order: str = "id"):
 
 @zad4ruter.get("/products_extended", status_code=200)
 async def get_products_extended():
-
     command = f"SELECT ProductID, ProductName, CategoryName, CompanyName" \
               f" FROM Products" \
               f" INNER JOIN Categories ON Categories.CategoryID = Products.CategoryID" \
@@ -97,8 +97,8 @@ async def get_products_extended():
 
     cursor = await zad4ruter.connection.execute(command)
     data = await cursor.fetchall()
-    result = [{"id": x['ProductID'], "name":x['ProductName'],
-               "category":x['CategoryName'], "supplier":x['CompanyName']} for x in data]
+    result = [{"id": x['ProductID'], "name": x['ProductName'],
+               "category": x['CategoryName'], "supplier": x['CompanyName']} for x in data]
 
     return {"products_extended": result}
 
@@ -124,10 +124,55 @@ async def get_all_product_orders(id: int):
     cursor = await zad4ruter.connection.execute(command, params)
     data = await cursor.fetchall()
 
-    orders = [{"id": x['OrderID'], "customer": x['CompanyName'], "quantity":x['Quantity'],
-               "total_price":round((1 - float(x['Discount']))*(float(x['UnitPrice']) * int(x['Quantity'])), 2)}
+    orders = [{"id": x['OrderID'], "customer": x['CompanyName'], "quantity": x['Quantity'],
+               "total_price": round((1 - float(x['Discount'])) * (float(x['UnitPrice']) * int(x['Quantity'])), 2)}
               for x in data]
     return {"orders": orders}
+
+
+@zad4ruter.post("/categories", status_code=201)
+async def createCategory(category: CategoriesDto):
+    # print(category.name)
+    command = f"INSERT INTO Categories(CategoryName) VALUES(:newname)"
+    params = {'newname': category.name}
+    cursor = await zad4ruter.connection.execute(command, params)
+    await zad4ruter.connection.commit()
+    return {
+        "id": cursor.lastrowid,
+        "name": category.name
+    }
+
+
+@zad4ruter.put("/categories/{idcategory}", status_code=200)
+async def updateCategory(category: CategoriesDto, idcategory: int):
+    command = f"UPDATE Categories SET CategoryName = :newname WHERE CategoryID = :categoryid"
+    params = {"newname": category.name, "categoryid": idcategory}
+    cursor = await zad4ruter.connection.execute(command, params)
+
+    if cursor.rowcount == 0:
+        await zad4ruter.connection.rollback()
+        raise HTTPException(status_code=404, detail="Nie ma kategorii o podanym id")
+
+    await zad4ruter.connection.commit()
+    return {
+        "id": idcategory,
+        "name": category.name
+    }
+
+
+@zad4ruter.delete("/categories/{idcategory}")
+async def deleteCategory(idcategory: int):
+    command = f"DELETE FROM Categories WHERE CategoryID = :categoryid"
+    params = {'categoryid': idcategory}
+    cursor = await zad4ruter.connection.execute(command, params)
+
+    if cursor.rowcount == 0:
+        raise HTTPException(status_code=404, detail="Nie znaleziono kategorii o podanym id")
+
+    await zad4ruter.connection.commit()
+    return {
+        "deleted": cursor.rowcount
+    }
 
 
 @zad4ruter.get("/getlogs")
