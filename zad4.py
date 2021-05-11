@@ -137,6 +137,7 @@ async def get_all_product_orders(id: int):
 
 @zad4ruter.post("/categories", status_code=201)
 async def createCategory(category: CategoriesDto):
+    logger.append(f"post {category=}")
     command = f"INSERT INTO Categories(CategoryName) VALUES(:newname)"
     params = {'newname': category.name}
     cursor = await zad4ruter.connection.execute(command, params)
@@ -149,6 +150,7 @@ async def createCategory(category: CategoriesDto):
 
 @zad4ruter.put("/categories/{idcategory}", status_code=200)
 async def updateCategory(category: CategoriesDto, idcategory: int):
+    logger.append(f"put {category=} {idcategory=}")
     command = f"UPDATE Categories SET CategoryName = :newname WHERE CategoryID = :categoryid"
     params = {"newname": category.name, "categoryid": idcategory}
     cursor = await zad4ruter.connection.execute(command, params)
@@ -166,6 +168,7 @@ async def updateCategory(category: CategoriesDto, idcategory: int):
 
 @zad4ruter.delete("/categories/{idcategory}", status_code=200)
 async def deleteCategory(idcategory: int):
+    logger.append(f"delete {idcategory=}")
     command = f"DELETE FROM Categories WHERE CategoryID = :categoryid"
     params = {'categoryid': idcategory}
     cursor = await zad4ruter.connection.execute(command, params)
