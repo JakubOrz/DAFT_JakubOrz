@@ -20,4 +20,7 @@ unicorn==1.0.2
 urllib3==1.26.4
 uvicorn==0.13.4
 
-aiosqlite~=0.17.0
+aiosqlite==0.17.0
+SQLAlchemy==1.4.15
+crud==0.1
+schemas==0.7.1

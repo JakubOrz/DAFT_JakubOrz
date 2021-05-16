@@ -1,10 +1,8 @@
-import hashlib
-
-import aiosqlite
 from fastapi import FastAPI, status, Response
 from Models import SimplePacjent, Pacjent
 from zad3 import zadanie3ruter
 from zad4 import zad4ruter
+from zadanie5.ruter5 import router as zad5ruter
 
 app = FastAPI()
 
@@ -19,6 +17,12 @@ app.include_router(
     zad4ruter,
     prefix="",
     tags=["Zadanie4"]
+)
+
+app.include_router(
+    zad5ruter,
+    prefix="/orm",
+    tags=["Zadanie5"]
 )
 
 
