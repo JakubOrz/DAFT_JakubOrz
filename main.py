@@ -21,7 +21,7 @@ app.include_router(
 
 app.include_router(
     zad5ruter,
-    prefix="/orm",
+    prefix="",
     tags=["Zadanie5"]
 )
 
