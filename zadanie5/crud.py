@@ -52,9 +52,9 @@ def add_supplier(db: Session, supplier: dict):
 
 
 def update_supplier(db: Session, supplier: dict, supplierid: int):
-    szukany = db.query(models2.Supplier).filter(models2.Supplier.SupplierID == supplierid)
 
-    if szukany is None:
+    szukany = db.query(models2.Supplier).filter(models2.Supplier.SupplierID == supplierid)
+    if szukany.first() is None:
         return None
 
     szukany.update(supplier)
