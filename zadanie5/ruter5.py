@@ -57,7 +57,7 @@ async def get_supplier_products(idsupplier: int):
         for productid, name, discounted, category in data:
             wynik = schemas.SuppliersProduct(ProductID=productid, ProductName=name,
                                              Category=schemas.SimpleCategory.from_orm(category),
-                                             Discounted=discounted
+                                             Discontinued=discounted
                                              )
             resultlist.append(wynik)
         return resultlist

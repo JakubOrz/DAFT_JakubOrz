@@ -47,7 +47,7 @@ class SuppliersProduct(BaseModel):
     ProductID: PositiveInt
     ProductName: constr(max_length=40) = None
     Category: Optional[SimpleCategory]
-    Discounted: Optional[NonNegativeInt]
+    Discontinued: Optional[NonNegativeInt]
 
     class Config:
         orm_mode = True

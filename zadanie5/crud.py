@@ -22,6 +22,10 @@ def get_suppliers(db: Session):
 
 
 def get_supplier_products(db: Session, idsupplier: int):
+    tmp = db.query(models2.Supplier).filter(models2.Supplier.SupplierID == idsupplier).first()
+    if tmp is None:
+        return None
+
     return db.query(models2.Product) \
         .join(models2.Category, models2.Product.CategoryID == models2.Category.CategoryID) \
         .order_by(desc(models2.Product.ProductID)) \
