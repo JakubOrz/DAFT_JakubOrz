@@ -71,6 +71,10 @@ async def add_supplier(supplier: dict):
 
 @router.put("/suppliers/{supplierid}", status_code=200, response_model=schemas.SupplierWithoutRegion)
 async def update_supplier(supplier: dict, supplierid: int):
+    if len(supplier.keys()) == 0:
+        with get_db() as connection:
+            return crud.get_supplier_by_id(connection, supplierid)
+
     validation = all(elem in schemas.Supplier.schema().get("properties") for elem in supplier.keys())
     if not validation:
         raise HTTPException(status_code=400, detail="Pola jakich być nie powinno")
