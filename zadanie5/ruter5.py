@@ -31,7 +31,7 @@ async def count_shippers():
         return crud.get_shippers_count(db)
 
 
-@router.get("/suppliers", response_model=List[schemas.Supplier])
+@router.get("/suppliers", response_model=List[schemas.SimpleSupplier])
 async def get_suppliers():
     with get_db() as connection:
         return crud.get_suppliers(connection)
