@@ -69,7 +69,7 @@ async def add_supplier(supplier: dict):
         return crud.add_supplier(connection, supplier)
 
 
-@router.put("/suppliers/{supplierid}", status_code=200, response_model=schemas.Supplier)
+@router.put("/suppliers/{supplierid}", status_code=200, response_model=schemas.SupplierWithoutRegion)
 async def update_supplier(supplier: dict, supplierid: int):
     validation = all(elem in schemas.Supplier.schema().get("properties") for elem in supplier.keys())
     if not validation:
@@ -79,7 +79,7 @@ async def update_supplier(supplier: dict, supplierid: int):
         result = crud.update_supplier(db=connection, supplier=supplier, supplierid=supplierid)
         if result is None:
             raise HTTPException(status_code=404, detail="Nie ma takiego suppliera")
-        return schemas.Supplier.from_orm(result)
+        return schemas.SupplierWithoutRegion.from_orm(result)
 
 
 @router.delete("/suppliers/{supplierid}", status_code=204)
